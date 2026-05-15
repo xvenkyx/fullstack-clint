@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
@@ -9,19 +9,12 @@ const Incidents = () => {
   const [incidents, setIncidents] = useState([]);
 
   useEffect(() => {
-    fetchIncidents();
+    axios.get(`${API_BASE}/incidents`).then(res => setIncidents(res.data)).catch(() => {});
     socket.on('new_incident', (data) => {
       setIncidents((prev) => [data, ...prev]);
     });
     return () => socket.off('new_incident');
   }, []);
-
-  const fetchIncidents = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/incidents`);
-      setIncidents(res.data);
-    } catch (err) {}
-  };
 
   return (
     <div className="incidents">

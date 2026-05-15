@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
@@ -10,27 +10,13 @@ const Dashboard = () => {
   const [stats, setStats] = useState({ totalCost: 0, totalTokens: 0 });
 
   useEffect(() => {
-    fetchData();
-    fetchStats();
+    axios.get(`${API_BASE}/responses`).then(res => setResponses(res.data)).catch(() => {});
+    axios.get(`${API_BASE}/stats`).then(res => setStats(res.data)).catch(() => {});
     socket.on('new_response', (data) => {
       setResponses((prev) => [data, ...prev].slice(0, 100));
     });
     return () => socket.off('new_response');
   }, []);
-
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/responses`);
-      setResponses(res.data);
-    } catch (err) {}
-  };
-
-  const fetchStats = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/stats`);
-      setStats(res.data);
-    } catch (err) {}
-  };
 
   const avgLatency = responses.length > 0 
     ? (responses.reduce((acc, r) => acc + r.responseTime, 0) / responses.length).toFixed(0)

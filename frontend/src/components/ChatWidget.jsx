@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 
@@ -27,7 +27,7 @@ const ChatWidget = () => {
     try {
       const res = await axios.post(`${API_BASE}/query`, { query: msg });
       setMessages(p => [...p, { role: 'ai', text: res.data.response }]);
-    } catch (err) {
+    } catch {
       setMessages(p => [...p, { role: 'ai', text: "Error processing query." }]);
     } finally {
       setLoading(false);

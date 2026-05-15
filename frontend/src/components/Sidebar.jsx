@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { LayoutDashboard, AlertCircle, BarChart3, Settings } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
