@@ -90,14 +90,20 @@ class AIService {
       const recentResponses = await ResponseModel.find().sort({ timestamp: -1 }).limit(15);
       const stats = await this.getStats();
       const callsUsed = callHistory.length;
-      
-      const prompt = `You are a monitoring assistant. 
-      System Data (last 15): ${JSON.stringify(recentResponses.map(r => ({ time: r.timestamp, dur: r.responseTime, code: r.statusCode })))}
-      AI Usage Stats: Cost: $${stats.totalCost.toFixed(4)}, Tokens: ${stats.totalTokens}, Calls in last hour: ${callsUsed}/20.
-      
+
+      const prompt = `You are a monitoring assistant for an HTTP monitoring system.
+      Recent requests (last 15): ${JSON.stringify(recentResponses.map(r => ({
+        time: r.timestamp,
+        responseTime: r.responseTime,
+        statusCode: r.statusCode,
+        payload: r.payload,
+        responseBody: r.responseBody ? { method: r.responseBody.method, json: r.responseBody.json } : null
+      })))}
+      AI Usage: Cost $${stats.totalCost.toFixed(4)}, Tokens: ${stats.totalTokens}, Calls this hour: ${callsUsed}/20.
+
       User Query: "${userQuery}"
-      
-      Provide a concise, helpful answer based on the data. If you can't answer, say so.`;
+
+      Answer concisely based on the data above. If you can't answer from what's available, say so.`;
 
       const response = await this.callLLM(prompt, 'natural_language_query');
       const result = response.content[0].text;
