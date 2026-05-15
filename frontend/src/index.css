@@ -1,0 +1,168 @@
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --border-primary: #eaeaea;
+  --accent: #0070f3;
+  --danger: #ee0000;
+  --success: #0070f3;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+[data-theme='dark'] {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --border-primary: #333333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  border-right: 1px solid var(--border-primary);
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 6px;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text-primary);
+  background: var(--border-primary);
+}
+
+.main {
+  flex: 1;
+  padding: 2rem 3rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-primary);
+  padding-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  padding: 1.25rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+}
+
+.card-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.card-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.badge {
+  padding: 2px 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.badge-success { color: #10b981; } /* Subtitle Green */
+.badge-error { color: var(--danger); font-weight: 600; }
+
+/* Chat */
+.chat-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 350px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  height: 450px;
+}
+
+.chat-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: 600;
+}
+
+.chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.chat-input {
+  padding: 1rem;
+  border-top: 1px solid var(--border-primary);
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  outline: none;
+}
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }

@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "lint": "eslint src/",
+    "test": "c8 node --test",
+    "coverage": "c8 report --reporter=text --reporter=lcov"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.96.0",
+    "axios": "^1.16.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "gpt-tokenizer": "^3.4.0",
+    "mongoose": "^9.6.2",
+    "node-cron": "^4.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "c8": "^11.0.0",
+    "eslint": "^8.57.1",
+    "supertest": "^7.2.2"
+  }
+}
