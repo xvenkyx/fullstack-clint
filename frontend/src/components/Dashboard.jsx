@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-const API_BASE = 'http://localhost:3001/api';
-const socket = io('http://localhost:3001');
+const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
+const socket = io(import.meta.env.VITE_API_URL);
 
 const Dashboard = () => {
   const [responses, setResponses] = useState([]);
