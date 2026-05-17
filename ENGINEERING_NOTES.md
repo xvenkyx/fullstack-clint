@@ -1,0 +1,23 @@
+# Engineering Notes
+
+Started by reading the brief twice before touching code. The AI integration section was the part I wanted to nail down first because it touches everything else — the model you pick shapes your cost structure, which shapes how aggressively you can call it, which shapes the UX. Getting that wrong early would've meant reworking things later.
+
+Three options to pick from for the AI enhancement. Option A was the statistical route — rolling z-scores, time-series forecasting, confidence bands. The issue is the core requirement already asks for anomaly detection (response time > 2x average triggers an incident), so building a full statistical system on top felt like covering ground that was already there. Option C was semantic payload search — tagging, vector embeddings, semantic queries. The data coming back from httpbin is just an echo of whatever you sent; building embedding pipelines on top of that felt like a lot of infrastructure for data that isn't actually interesting to search. Option B fit because the NL layer adds something the core requirements don't have, and the cost optimisation piece made it technically worth thinking through carefully.
+
+That said, Option A vs Option B still felt like a bit of a false choice in terms of what makes a useful product. Anomaly detection without any way to ask follow-up questions is a dead end — you see a spike flagged and then you're stuck trying to read context from raw numbers. So I ended up doing both: the 2x threshold anomaly detection runs as background automation, and the NL query layer handles the interactive side. Probably not exactly what the brief intended but it felt like the more complete thing to build.
+
+Went with Haiku 4.5 over Sonnet. The tasks here are structured extraction (incident reports) and factual summarisation (NL queries) — neither needs strong reasoning. Sonnet would've been overkill. More importantly, the cost delta at 20 calls/hour isn't abstract: Haiku gets to roughly $6/month at full saturation, Sonnet would be 5x that for a monitoring tool running continuously. The pricing constants in the code (0.00025/1K input, 0.00125/1K output) are estimates — the Haiku 4.5 numbers weren't clearly listed on the pricing page when I checked, so I extrapolated from Haiku 3. May be slightly off but in the right ballpark.
+
+Cost optimisation was the most interesting part to reason through. The cache was the obvious win — NL queries tend to be repetitive in practice so a 10-minute keyed cache pays off fast and the implementation is three lines. Cutting context from 50 to 15 response records was a judgment call. I tested both and the quality difference on typical questions was minimal. If someone asks statistical questions spanning a long time window, 15 records loses signal — but that's an edge case worth calling out rather than designing around at this stage. The token counting before each call (`gpt-tokenizer`) was added to show running cost in the UI without waiting on the API response to come back. The downside is you're tokenizing twice — overhead is negligible, but worth knowing.
+
+Two things got dropped: streaming chat responses and multi-endpoint monitoring. Streaming is a bigger change than it looks — SSE on the backend, chunked rendering on the frontend. The blocking call works fine for a demo and it felt like polish rather than core. Multi-endpoint was maybe 20 extra lines but didn't add anything interesting to the submission. The schema already supports it if needed.
+
+If I were starting over, the rate limiter would be injected as a constructor dependency on `AIService` rather than living in module scope. It makes testing awkward — you can't reset the call history between tests without reaching into module internals, which is why the test file ends up testing the logic pattern in isolation. It works but it's a real design smell. The Mongoose models also have no field validation, which is fine for a demo but would be the first thing to harden in production.
+
+## Deployment
+
+Started with the obvious choice — Vercel for both. The frontend went up without a hitch; standard Vite build, done in a few minutes.
+
+The backend hit a wall pretty quickly. Vercel runs on serverless functions, which means no persistent connections — and Socket.io needs a persistent WebSocket connection to push live updates to the browser. Serverless doesn't support that model at all, the connection just gets killed.
+
+Ended up on Railway for the backend. It runs a regular persistent Node process, supports WebSockets natively, and deploying from a GitHub repo took about five minutes. Frontend stayed on Vercel, backend on Railway, and the two talk to each other without any issues.

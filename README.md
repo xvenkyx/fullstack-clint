@@ -12,9 +12,9 @@ Pings `httpbin.org/anything` every 5 minutes with a randomly generated JSON payl
 ```
 cd backend
 npm install
-cp .env.example .env   # set CLAUDE_API_KEY and MONGODB_URI
 npm start
 ```
+Set `CLAUDE_API_KEY` and `MONGODB_URI` as environment variables before starting.
 
 **Frontend**
 ```
@@ -22,6 +22,11 @@ cd frontend
 npm install
 npm run dev
 ```
+
+## Live deployment
+
+- Frontend (Vercel) — -
+- Backend (Railway) — -
 
 ## Tech choices
 
